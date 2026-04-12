@@ -205,6 +205,22 @@
       background: rgba(255,255,255,0.95);
       border: 1px solid #ffd0e3;
       text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .success-box::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: url("logo_background.png") center center / contain no-repeat;
+      opacity: 0.18;
+      z-index: 0;
+    }
+
+    .success-box > * {
+      position: relative;
+      z-index: 1;
     }
 
     .success-box.show {
