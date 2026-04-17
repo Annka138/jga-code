@@ -271,9 +271,9 @@
       </div>
 
       <div id="successBox" class="success-box" aria-live="polite">
+        <h2 class="hint-title">Herzlichen Glückwunsch!<br>Hier ist der nächste Hinweis:</h2>
+        <img id="hintImage" class="gif" src="hinweis.jpeg" alt="Nächster Hinweis" />
         <img id="successGif" class="gif" alt="Erfolgs-GIF" />
-        <h2 class="hint-title">Geschafft 🎉</h2>
-        <p id="hintText" class="hint-text"></p>
       </div>
     </section>
   </main>
@@ -285,8 +285,6 @@
       ===============================
     */
     const CORRECT_CODE = "1895";
-
-    const NEXT_HINT = "Super! Platzhalter: Euer nächster Hinweis wartet dort, wo es in Esslingen flüssig, kühl und vielleicht ein bisschen prickelnd wird. 🍾";
 
     const SUCCESS_GIF = "success.gif";
 
@@ -301,13 +299,11 @@
     const message = document.getElementById('message');
     const successBox = document.getElementById('successBox');
     const successGif = document.getElementById('successGif');
-    const hintText = document.getElementById('hintText');
     const checkBtn = document.getElementById('checkBtn');
     const resetBtn = document.getElementById('resetBtn');
     const lockSection = document.getElementById('lockSection');
 
     successGif.src = SUCCESS_GIF;
-    hintText.textContent = NEXT_HINT;
 
     inputs.forEach((input, index) => {
       input.addEventListener('input', () => {
