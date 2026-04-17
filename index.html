@@ -227,14 +227,18 @@
     }
 
     .hint-title {
-      margin: 0 0 8px;
+      margin: 0 0 12px;
       font-size: 1.1rem;
     }
 
-    .hint-text {
-      margin: 0;
-      line-height: 1.45;
-      font-size: 1rem;
+    .hint-image {
+      width: 100%;
+      max-width: 100%;
+      border-radius: 18px;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.12);
+      display: block;
+      margin: 0 auto;
+      background: #fff;
     }
 
     .mini {
@@ -242,12 +246,31 @@
       color: var(--muted);
       font-size: 0.84rem;
     }
+
+    .bottom-logo-wrap {
+      display: none;
+      margin-top: 16px;
+      text-align: center;
+    }
+
+    .bottom-logo-wrap.show {
+      display: block;
+      animation: pop 0.32s ease;
+    }
+
+    .bottom-logo {
+      width: 100%;
+      max-width: 220px;
+      display: block;
+      margin: 0 auto;
+    }
   </style>
 </head>
 <body>
   <main class="wrap">
     <section class="card">
       <img src="logo.jpeg" class="logo" alt="JGA Logo">
+
       <div id="lockSection">
         <div class="lock" aria-hidden="true"></div>
         <h1>Knack den Code 💃</h1>
@@ -270,10 +293,17 @@
         <p class="mini">Tipp: Die Eingabe springt automatisch weiter.</p>
       </div>
 
+      <div id="gifBox" class="success-box" aria-live="polite">
+        <img id="successGif" class="gif" alt="Erfolgs-GIF" />
+      </div>
+
       <div id="successBox" class="success-box" aria-live="polite">
         <h2 class="hint-title">Herzlichen Glückwunsch!<br>Hier ist der nächste Hinweis:</h2>
-        <img id="hintImage" class="gif" src="hinweis.png" alt="Nächster Hinweis" />
-        <img id="successGif" class="gif" alt="Erfolgs-GIF" />
+        <img id="hintImage" class="hint-image" src="hinweis.png" alt="Nächster Hinweis" />
+      </div>
+
+      <div id="bottomLogoWrap" class="bottom-logo-wrap">
+        <img src="logo.jpeg" class="bottom-logo" alt="JGA Logo" />
       </div>
     </section>
   </main>
@@ -285,10 +315,9 @@
       ===============================
     */
     const CORRECT_CODE = "1895";
-
     const SUCCESS_GIF = "success.gif";
-
     const ERROR_TEXT = "Leider falsch! 😈";
+    const GIF_DURATION_MS = 5000;
 
     /*
       ===============================
@@ -298,10 +327,14 @@
     const inputs = [...document.querySelectorAll('.digit')];
     const message = document.getElementById('message');
     const successBox = document.getElementById('successBox');
+    const gifBox = document.getElementById('gifBox');
     const successGif = document.getElementById('successGif');
     const checkBtn = document.getElementById('checkBtn');
     const resetBtn = document.getElementById('resetBtn');
     const lockSection = document.getElementById('lockSection');
+    const bottomLogoWrap = document.getElementById('bottomLogoWrap');
+
+    let successTimeout = null;
 
     successGif.src = SUCCESS_GIF;
 
@@ -370,6 +403,12 @@
       setTimeout(() => ctx.close(), 450);
     }
 
+    function showFinalSuccessPage() {
+      gifBox.classList.remove('show');
+      successBox.classList.add('show');
+      bottomLogoWrap.classList.add('show');
+    }
+
     function checkCode() {
       const code = getCode();
 
@@ -380,7 +419,11 @@
 
       if (code === CORRECT_CODE) {
         lockSection.style.display = 'none';
-        successBox.classList.add('show');
+        gifBox.classList.add('show');
+
+        successTimeout = setTimeout(() => {
+          showFinalSuccessPage();
+        }, GIF_DURATION_MS);
       } else {
         showMessage(ERROR_TEXT, 'error');
         playErrorSound();
@@ -388,11 +431,19 @@
     }
 
     function resetAll() {
+      if (successTimeout) {
+        clearTimeout(successTimeout);
+        successTimeout = null;
+      }
+
       inputs.forEach(input => {
         input.value = '';
         input.disabled = false;
       });
+
+      gifBox.classList.remove('show');
       successBox.classList.remove('show');
+      bottomLogoWrap.classList.remove('show');
       lockSection.style.display = 'block';
       showMessage('');
       inputs[0].focus();
